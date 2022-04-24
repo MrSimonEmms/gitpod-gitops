@@ -1,0 +1,465 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    kots.io/app-slug: gitpod
+  labels:
+    app: gitpod
+    component: gitpod-installer
+    kots.io/app-slug: gitpod
+    kots.io/backup: velero
+  name: installer
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    kots.io/app-slug: gitpod
+  labels:
+    app: gitpod
+    component: gitpod-installer
+    kots.io/app-slug: gitpod
+    kots.io/backup: velero
+  name: installer
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: installer
+  namespace: gitpod
+---
+apiVersion: v1
+data:
+  gitpod-config-patch.yaml: e30=
+kind: ConfigMap
+metadata:
+  annotations:
+    kots.io/app-slug: gitpod
+  labels:
+    app: gitpod
+    component: gitpod-installer
+    kots.io/app-slug: gitpod
+    kots.io/backup: velero
+  name: gitpod-config-patch
+---
+apiVersion: v1
+data:
+  channelName: dev-sje
+  cursor: "72"
+  isAirgap: "false"
+  releaseNotes: ""
+  sequence: "0"
+  version: "1650726206"
+kind: ConfigMap
+metadata:
+  annotations:
+    kots.io/app-slug: gitpod
+  labels:
+    app: gitpod
+    component: gitpod-installer
+    kots.io/app-slug: gitpod
+    kots.io/backup: velero
+  name: gitpod-installation
+---
+apiVersion: v1
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJwcm94eS5yZXBsaWNhdGVkLmNvbSI6eyJhdXRoIjoiTWpaUmEwdFlVbEV6VEdaMWJ6azNTR3RuUTNBMmVYZGpOMlExT2pJMlVXdExXRkpSTTB4bWRXODVOMGhyWjBOd05ubDNZemRrTlE9PSJ9LCJyZWdpc3RyeS5yZXBsaWNhdGVkLmNvbSI6eyJhdXRoIjoiTWpaUmEwdFlVbEV6VEdaMWJ6azNTR3RuUTNBMmVYZGpOMlExT2pJMlVXdExXRkpSTTB4bWRXODVOMGhyWjBOd05ubDNZemRrTlE9PSJ9fX0=
+kind: Secret
+metadata:
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-weight: "-9999"
+    kots.io/app-slug: gitpod
+  creationTimestamp: null
+  labels:
+    kots.io/app-slug: gitpod
+    kots.io/backup: velero
+  name: gitpod-registry
+  namespace: gitpod
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: v1
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJwcm94eS5yZXBsaWNhdGVkLmNvbSI6eyJhdXRoIjoiTWpaUmEwdFlVbEV6VEdaMWJ6azNTR3RuUTNBMmVYZGpOMlExT2pJMlVXdExXRkpSTTB4bWRXODVOMGhyWjBOd05ubDNZemRrTlE9PSJ9LCJyZWdpc3RyeS5yZXBsaWNhdGVkLmNvbSI6eyJhdXRoIjoiTWpaUmEwdFlVbEV6VEdaMWJ6azNTR3RuUTNBMmVYZGpOMlExT2pJMlVXdExXRkpSTTB4bWRXODVOMGhyWjBOd05ubDNZemRrTlE9PSJ9fX0=
+kind: Secret
+metadata:
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-weight: "-9999"
+    kots.io/app-slug: gitpod
+  creationTimestamp: null
+  labels:
+    kots.io/app-slug: gitpod
+    kots.io/backup: velero
+  name: kotsadm-replicated-registry
+  namespace: gitpod
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: v1
+data:
+  .dockerconfigjson: eyJhdXRocyI6IHsiZ2l0cG9kODM1NTYuYXp1cmVjci5pbyI6IHsidXNlcm5hbWUiOiAiZ2l0cG9kODM1NTYiLCAicGFzc3dvcmQiOiAibkxMSWJGcjhTSDIrVm1nVFpXK1JMeHh2b0JKR2xxTWYiLCAiYXV0aCI6ICJaMmwwY0c5a09ETTFOVFk2Ymt4TVNXSkdjamhUU0RJclZtMW5WRnBYSzFKTWVIaDJiMEpLUjJ4eFRXWT0ifX19
+kind: Secret
+metadata:
+  annotations:
+    kots.io/app-slug: gitpod
+    kots.io/when: "true"
+  labels:
+    kots.io/app-slug: gitpod
+    kots.io/backup: velero
+  name: container-registry
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: v1
+data:
+  license: eyJsaWNlbnNlRGF0YSI6ImV5SmhjR2xXWlhKemFXOXVJam9pYTI5MGN5NXBieTkyTVdKbGRHRXhJaXdpYTJsdVpDSTZJa3hwWTJWdWMyVWlMQ0p0WlhSaFpHRjBZU0k2ZXlKdVlXMWxJam9pYzJsdGIyNHRaR1YySW4wc0luTndaV01pT25zaWJHbGpaVzV6WlVsRUlqb2lNalpSYTB0WVVsRXpUR1oxYnprM1NHdG5RM0EyZVhkak4yUTFJaXdpYkdsalpXNXpaVlI1Y0dVaU9pSmtaWFlpTENKamRYTjBiMjFsY2s1aGJXVWlPaUpUYVcxdmJpMWtaWFlpTENKaGNIQlRiSFZuSWpvaVoybDBjRzlrSWl3aVkyaGhibTVsYkVsRUlqb2lNalpSYUZGb1RuTXljVTVEVmtwMlRXMVBWa1I2VDAxM1JESjVJaXdpWTJoaGJtNWxiRTVoYldVaU9pSmtaWFl0YzJwbElpd2liR2xqWlc1elpWTmxjWFZsYm1ObElqb3hNaXdpWlc1a2NHOXBiblFpT2lKb2RIUndjem92TDNKbGNHeHBZMkYwWldRdVlYQndJaXdpWlc1MGFYUnNaVzFsYm5SeklqcDdJbVJ2YldGcGJpSTZleUowYVhSc1pTSTZJa1J2YldGcGJpSXNJblpoYkhWbElqb2laMmwwY0c5a0xXRjZkWEpsTG5OcGJXOXVaVzF0Y3k1amIyMGlMQ0oyWVd4MVpWUjVjR1VpT2lKVGRISnBibWNpZlN3aVpYaHdhWEpsYzE5aGRDSTZleUowYVhSc1pTSTZJa1Y0Y0dseVlYUnBiMjRpTENKa1pYTmpjbWx3ZEdsdmJpSTZJa3hwWTJWdWMyVWdSWGh3YVhKaGRHbHZiaUlzSW5aaGJIVmxJam9pSWl3aWRtRnNkV1ZVZVhCbElqb2lVM1J5YVc1bkluMHNJbXhsZG1Wc1NXUWlPbnNpZEdsMGJHVWlPaUpNYVdObGJuTmxJR3hsZG1Wc0lpd2lkbUZzZFdVaU9qRXNJblpoYkhWbFZIbHdaU0k2SWtsdWRHVm5aWElpTENKcGMwaHBaR1JsYmlJNmRISjFaWDBzSW5ObFlYUnpJanA3SW5ScGRHeGxJam9pVlhObGNpQnpaV0YwY3lJc0luWmhiSFZsSWpveE1Dd2lkbUZzZFdWVWVYQmxJam9pU1c1MFpXZGxjaUo5ZlN3aWFYTkJhWEpuWVhCVGRYQndiM0owWldRaU9uUnlkV1VzSW1selIybDBUM0J6VTNWd2NHOXlkR1ZrSWpwMGNuVmxMQ0pwYzFOdVlYQnphRzkwVTNWd2NHOXlkR1ZrSWpwMGNuVmxMQ0pwYzA1bGQwdHZkSE5WYVVWdVlXSnNaV1FpT25SeWRXVjlmUT09IiwiaW5uZXJTaWduYXR1cmUiOiJleUpzYVdObGJuTmxVMmxuYm1GMGRYSmxJam9pUjFKSVNXTllhRGROUWpCalNUVlRUVTlFZGxKSFpIbDVia1JhT0c1bGVtdElTR0V2Wnpac2JUVlJlREpEU3pWWlVrRkRWWFV6TWxSTlJHaDJTVkJ1VG5salFtSmlha1pyZURJeFkwUm5jVTh5TUdoTGIyODJUbWRaY1dndlVsRjViMWRpUXpoQ2MyUkhjbUpuTm10NVpWZFlha1l6VVd3NUwzVkVXRFYzV0VkU01VNVRXUzl4VldkUFJUVlZTekYwT0U5Vk9HNUVVMU50V1hKdU5GQXJTbXBDVWsxNVYyWnJaMmN4YVRkWVJWRXlTV0pSTUdGMUwzUkpRMDVKSzFobGVteE9SSGRzU0ZkNFRGTm5USFJRTWpWVGVubGxSekJCUnpSTE1qbHhaemgzUzJwaU5saHRVREpVTDBSS09YUkVOVWhtZG5scVprdGhVV3RKYW5CcmF6TXhWMGRSYVV3clIwOUViMkZVT0dodU1HVXlUbU5DVUcxWVdTdG5lRWRqTjIxRVpYTjJVR0ZGYTNWaFJUTnhURTV6WldNM05IZE9Wa2xrYlVSR2JsaHZPVkJWVFdwMmEwdzVabFF4T1V4dFMyaElVSFJSUFQwaUxDSndkV0pzYVdOTFpYa2lPaUl0TFMwdExVSkZSMGxPSUZCVlFreEpReUJMUlZrdExTMHRMVnh1VFVsSlFrbHFRVTVDWjJ0eGFHdHBSemwzTUVKQlVVVkdRVUZQUTBGUk9FRk5TVWxDUTJkTFEwRlJSVUZ2Tlc1Nk9WbEVTMU5SUm1Wd2IySmFWakE1ZDF4dVdFdGxOM1JzVEZWVlZXNVRaVGd3TUVkRFMxUkRWRnB6Ym05cWRVSmhlV3BwUzJSM1drUXpWVlJLY1RCRWFXOUJjbGhWYTJoRU5HdG1kRE50UkZRM1JseHVZa0Z5ZUZkRVZYUnJOMWR6VmpGbWJFaHZjR3RpV0ZwSWNFaHlUM2QyV0daVFFraGlPVkZCYVVrMGQxcERkbWxDWmpkT01IVmxUV2xvVURKa2EzQnNiVnh1Tm1aSUx6RlRiR3BrWlZWU01XVkpjbVZXTjJSRFFYQmlhVzV5Tms5VVNERmpVMDQxVm1OWmVITjJVamhVT1RnclVVbEhMMFpXYW1NM2EzTnJTbUp5TTF4dWQwSlRkR2hqVWxoS2JrdHRaa296ZVdWeGQyZGxOa0ZCUTJkblYxWlFURFJHYW5ab05DOVJNblJ4V2tkQ2NXeFBXWFY0THpSSVYzWlRVMlZZUzFoMmNseHVZVVJhY2tOblNYRk9NWEJSUlZrd2FtMHlaa3hIWkU5RFJXaEZkbFJ4WkU0MGRXOW5iRTAxY2lzeWRVbFliblZFYUVvdlEzWkxkR2RUUldaSU0zQmtkVnh1Y2xGSlJFRlJRVUpjYmkwdExTMHRSVTVFSUZCVlFreEpReUJMUlZrdExTMHRMVnh1SWl3aWEyVjVVMmxuYm1GMGRYSmxJam9pWlhsS2VtRlhaSFZaV0ZJeFkyMVZhVTlwU2sxa2JrWjFXakI0YzFkSE9YcGpNMlJ0VXpOdmNrNUlXa3hPVlVaM1pFVndORlpzU21sVFJtaERVMjFaY2s5V2JGZFZWWGhKVmtkS1VtSnFhSE5hYW1SVlRrZG9jVnBJVWs1VWEzUndZMGRrUjAxNlZsbFZla0pWV1dsMGJFNUdWbEJYYlhBelkwVlNSbUZVUmxwalJGWXhZMVpzUWxSWVFUVmhWR2hEWVd0TmVsWjZZelZOVm14M1ZVWmFVVmxYTUhKaE0wNUdUMGQ0YkZsWFVUSmliRkp0VVRCd2JsbFZjRTFNTTFKNlZHdGtVMk13V2xSWGJGcHhaRzFzYmxKVVVrWkxNWEIxVFd0MFVGb3liSFJrUmxWNVZGVm9hV0p1Vm5kalZuQjRWR3BhTkZwNlduaGtXRXB6V2taa2ExZFVWa3BUYld4R1V6SmtkbEpyZDNsaGJVcHRUbXBTTWxsdVRYWmhWVFZ1VkVoS2JHTXpjR3hsYkU1Q1UycE5lVkZ1Ykd4TlIyUkxUbTVXUmxKRmNFeFVNVTVhVGtaRk5WbFdjR2hUYW14WlYwVndlbVJYTVhsVk1EUjVVa1pSTlZacVVtbFNNMW96VXpGV1JsZHVWWHBhVlZVd1pFVktjbVJZUmxsWmJFSTJZbGM1YjFWRVRteE5iRlp2VW5wT1RHRkljRmhWUlRsRVlVZHdUVXN3VmtkV1ZrVTBZakkxVFU1dFpGTmtia28wWWxac1MxbFhSa0pqV0Zvd1dtdHdUbFp0WkhaVGVrWjJaRWhhVFZaWGRGaGlhVGwyWWtSVmNsZFZSVGxRVTBselNXMWtjMkl5U21oaVJYUnNaVlZzYTBscWIybFpiVkpzV2xSVk1rNVVXWGRaTWxwcFRrUk9hazlYU1hsUFIwcHRUMVJvYkZsWFRtaGFiVVV5VGtSWmFXWlJQVDBpZlE9PSJ9
+  type: cmVwbGljYXRlZA==
+kind: Secret
+metadata:
+  annotations:
+    kots.io/app-slug: gitpod
+  labels:
+    app: gitpod
+    component: gitpod-installer
+    kots.io/app-slug: gitpod
+    kots.io/backup: velero
+  name: gitpod-license
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kots.io/app-slug: gitpod
+  labels:
+    app: gitpod
+    component: gitpod-installer-status
+    kots.io/app-slug: gitpod
+    kots.io/backup: velero
+  name: installation-status
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitpod
+      component: gitpod-installer-status
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kots.io/app-slug: gitpod
+      labels:
+        app: gitpod
+        component: gitpod-installer-status
+        kots.io/app-slug: gitpod
+        kots.io/backup: velero
+    spec:
+      containers:
+      - args:
+        - |
+          set -e
+
+          while true
+          do
+            echo "Checking installation status"
+
+            if [ "$(helm status -n gitpod gitpod -o json | jq '.info.status == "deployed"')" != "true" ];
+            then
+              echo "Gitpod: Installation not complete"
+              exit 1
+            fi
+
+            echo "Sleeping for 10 seconds"
+            sleep 10
+          done
+        command:
+        - /bin/sh
+        - -c
+        image: eu.gcr.io/gitpod-core-dev/build/installer:sje-kots-install-cancel.13
+        name: installation-status
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+      imagePullSecrets:
+      - name: gitpod-registry
+      restartPolicy: Always
+      serviceAccountName: installer
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    kots.io/app-slug: gitpod
+  labels:
+    app: gitpod
+    component: gitpod-installer
+    cursor: "72"
+    kots.io/app-slug: gitpod
+    kots.io/backup: velero
+  name: installer-72
+spec:
+  template:
+    metadata:
+      annotations:
+        kots.io/app-slug: gitpod
+      labels:
+        app: gitpod
+        component: gitpod-installer
+        cursor: "72"
+        kots.io/app-slug: gitpod
+        kots.io/backup: velero
+    spec:
+      containers:
+      - args:
+        - |
+          set -e
+
+          echo "Gitpod: Killing any in-progress installations"
+
+          kubectl delete jobs.batch -n gitpod -l component=gitpod-installer,cursor!=72 --force --grace-period 0 || true
+          kubectl delete pod -n gitpod -l component=gitpod-installer,cursor!=72 --force --grace-period 0 || true
+
+          if [ "$(helm status -n gitpod gitpod -o json | jq '.info.status == "deployed"')" = "false" ];
+          then
+            echo "Gitpod: Deployment in-progress - clearing"
+
+            VERSION="$(helm status -n gitpod gitpod -o json | jq '.version')"
+            if [ "${VERSION}" -le 1 ];
+            then
+              echo "Gitpod: Uninstall application"
+              helm uninstall -n gitpod gitpod --wait || true
+            else
+              echo "Gitpod: Rolling back application"
+              helm rollback -n gitpod gitpod --wait || true
+            fi
+          fi
+
+          echo "Gitpod: Generate the base Installer config"
+          /app/installer init > "${CONFIG_FILE}"
+
+          echo "Gitpod: auto-detecting containerd location on host machine"
+          if [ -d "/mnt/node0${CONTAINERD_DIR_K3S}" ]; then
+            echo "Gitpod: containerd dir detected as k3s"
+
+            yq e -i ".workspace.runtime.containerdRuntimeDir = \"${CONTAINERD_DIR_K3S}\"" "${CONFIG_FILE}"
+          fi
+
+          if [ -S "/mnt/node0${CONTAINERD_SOCKET_K3S}" ]; then
+            echo "Gitpod: containerd socket detected as k3s"
+
+            yq e -i ".workspace.runtime.containerdSocket = \"${CONTAINERD_SOCKET_K3S}\"" "${CONFIG_FILE}"
+          fi
+
+          echo "Gitpod: Inject the Replicated variables into the config"
+          yq e -i '.domain = "gitpod-azure.simonemms.com"' "${CONFIG_FILE}"
+          yq e -i '.license.kind = "secret"' "${CONFIG_FILE}"
+          yq e -i '.license.name = "gitpod-license"' "${CONFIG_FILE}"
+
+          if [ 'false' = "true" ];
+          then
+            echo "Gitpod: configuring CloudSQLProxy"
+
+            yq e -i ".database.inCluster = false" "${CONFIG_FILE}"
+            yq e -i ".database.cloudSQL.instance = \"\"" "${CONFIG_FILE}"
+            yq e -i ".database.cloudSQL.serviceAccount.kind = \"secret\"" "${CONFIG_FILE}"
+            yq e -i ".database.cloudSQL.serviceAccount.name = \"cloudsql\"" "${CONFIG_FILE}"
+          fi
+
+          if [ 'false' = "true" ];
+          then
+            echo "Gitpod: configuring external database"
+
+            yq e -i ".database.inCluster = false" "${CONFIG_FILE}"
+            yq e -i ".database.external.certificate.kind = \"secret\"" "${CONFIG_FILE}"
+            yq e -i ".database.external.certificate.name = \"database\"" "${CONFIG_FILE}"
+          fi
+
+          if [ 'false' = "true" ];
+          then
+            echo "Gitpod: configuring mirrored container registry"
+
+            yq e -i ".containerRegistry.inCluster = false" "${CONFIG_FILE}"
+            yq e -i ".containerRegistry.external.url = \"\"" "${CONFIG_FILE}"
+            yq e -i ".containerRegistry.external.certificate.kind = \"secret\"" "${CONFIG_FILE}"
+            yq e -i ".containerRegistry.external.certificate.name = \"gitpod-registry\"" "${CONFIG_FILE}"
+            yq e -i ".repository = \"\"" "${CONFIG_FILE}"
+            yq e -i ".imagePullSecrets[0].kind = \"secret\"" "${CONFIG_FILE}"
+            yq e -i ".imagePullSecrets[0].name = \"gitpod-registry\"" "${CONFIG_FILE}"
+            yq e -i '.dropImageRepo = true' "${CONFIG_FILE}"
+          elif [ 'true' = "true" ];
+          then
+            echo "Gitpod: configuring external container registry"
+
+            yq e -i ".containerRegistry.inCluster = false" "${CONFIG_FILE}"
+            yq e -i ".containerRegistry.external.url = \"gitpod83556.azurecr.io\"" "${CONFIG_FILE}"
+            yq e -i ".containerRegistry.external.certificate.kind = \"secret\"" "${CONFIG_FILE}"
+            yq e -i ".containerRegistry.external.certificate.name = \"container-registry\"" "${CONFIG_FILE}"
+
+            if [ 'false' = "true" ];
+            then
+              echo "Gitpod: configuring container registry S3 backend"
+
+              yq e -i ".containerRegistry.s3storage.bucket = \"\"" "${CONFIG_FILE}"
+              yq e -i ".containerRegistry.s3storage.certificate.kind = \"secret\"" "${CONFIG_FILE}"
+              yq e -i ".containerRegistry.s3storage.certificate.name = \"container-registry-s3-backend\"" "${CONFIG_FILE}"
+            fi
+          fi
+
+          if [ 'false' = "true" ];
+          then
+            echo "Gitpod: configuring the storage"
+
+            yq e -i ".metadata.region = \"\"" "${CONFIG_FILE}"
+            yq e -i ".objectStorage.inCluster = false" "${CONFIG_FILE}"
+
+            if [ 'false' = "true" ];
+            then
+              echo "Gitpod: configuring storage for Azure"
+
+              yq e -i ".objectStorage.azure.credentials.kind = \"secret\"" "${CONFIG_FILE}"
+              yq e -i ".objectStorage.azure.credentials.name = \"storage-azure\"" "${CONFIG_FILE}"
+            fi
+
+            if [ 'false' = "true" ];
+            then
+              echo "Gitpod: configuring storage for GCP"
+
+              yq e -i ".objectStorage.cloudStorage.project = \"\"" "${CONFIG_FILE}"
+              yq e -i ".objectStorage.cloudStorage.serviceAccount.kind = \"secret\"" "${CONFIG_FILE}"
+              yq e -i ".objectStorage.cloudStorage.serviceAccount.name = \"storage-gcp\"" "${CONFIG_FILE}"
+            fi
+
+            if [ 'false' = "true" ];
+            then
+              echo "Gitpod: configuring storage for S3"
+
+              yq e -i ".objectStorage.s3.endpoint = \"s3.amazonaws.com\"" "${CONFIG_FILE}"
+              yq e -i ".objectStorage.s3.credentials.secret = \"secret\"" "${CONFIG_FILE}"
+              yq e -i ".objectStorage.s3.credentials.name = \"storage-s3\"" "${CONFIG_FILE}"
+            fi
+          fi
+
+          if [ 'false' = "true" ];
+          then
+            echo "Gitpod: Generate SSH host key"
+            apk update && apk add --no-cache openssh-keygen # TODO: Move installation of openssh-keygen to installer image
+            ssh-keygen -t rsa -q -N "" -f host.key
+            kubectl create secret generic ssh-gateway-host-key --from-file=host.key -n gitpod || echo "SSH Gateway Host Key secret has not been created. Does it exist already?"
+            yq e -i '.sshGatewayHostKey.kind = "secret"' "${CONFIG_FILE}"
+            yq e -i '.sshGatewayHostKey.name = "ssh-gateway-host-key"' "${CONFIG_FILE}"
+          fi
+
+          echo "Gitpod: Patch Gitpod config"
+          base64 -d "${CONFIG_PATCH_FILE}" > /tmp/patch.yaml
+          config_patch=$(cat /tmp/patch.yaml)
+          echo "Gitpod: ${CONFIG_PATCH_FILE}=${config_patch}"
+          yq eval-all --inplace 'select(fileIndex == 0) * select(fileIndex == 1)' "${CONFIG_FILE}" /tmp/patch.yaml
+
+          echo "Gitpod: Generate the Kubernetes objects"
+          config=$(cat "${CONFIG_FILE}")
+          echo "Gitpod: ${CONFIG_FILE}=${config}"
+
+          echo "Gitpod: Create a Helm template directory"
+          rm -Rf "${GITPOD_OBJECTS}"
+          mkdir -p "${GITPOD_OBJECTS}/templates"
+          cat <<EOF >> "${GITPOD_OBJECTS}/Chart.yaml"
+          apiVersion: v2
+          name: gitpod-kots
+          description: Always ready-to-code
+          version: "1.0.0"
+          appVersion: "$(/app/installer version | yq e '.version' -)"
+          EOF
+
+          echo "Gitpod: render Kubernetes manifests"
+          /app/installer render -c "${CONFIG_FILE}" --namespace gitpod > "${GITPOD_OBJECTS}/templates/gitpod.yaml"
+
+          # Workaround for #8532 and #8529
+          echo "Gitpod: Remove the StatefulSet status object for OpenVSX Proxy"
+          yq eval-all --inplace \
+            'del(select(.kind == "StatefulSet" and .metadata.name == "openvsx-proxy").status)' \
+            "${GITPOD_OBJECTS}/templates/gitpod.yaml"
+
+          echo "Gitpod: Escape any Golang template values"
+          sed -i -r 's/(.*\{\{.*)/{{`\1`}}/' "${GITPOD_OBJECTS}/templates/gitpod.yaml"
+
+          # The long timeout is to ensure the TLS cert is created (if required)
+          echo "Gitpod: Apply the Kubernetes objects"
+          helm upgrade \
+            --atomic \
+            --cleanup-on-fail \
+            --create-namespace \
+            --install \
+            --namespace="gitpod" \
+            --reset-values \
+            --timeout 1h \
+            --wait \
+            gitpod \
+            "${GITPOD_OBJECTS}"
+
+          echo "Gitpod: Restarting installation status job"
+          kubectl delete pod -n gitpod -l component=gitpod-installer-status || true
+
+          echo "Gitpod: Installer job finished - goodbye"
+        command:
+        - /bin/sh
+        - -c
+        env:
+        - name: CONFIG_FILE
+          value: /tmp/gitpod-config.yaml
+        - name: CONFIG_PATCH_FILE
+          value: /config-patch/gitpod-config-patch.yaml
+        - name: CONTAINERD_DIR_K3S
+          value: /run/k3s/containerd/io.containerd.runtime.v2.task/k8s.io
+        - name: CONTAINERD_SOCKET_K3S
+          value: /run/k3s/containerd/containerd.sock
+        - name: GITPOD_OBJECTS
+          value: /tmp/gitpod
+        image: eu.gcr.io/gitpod-core-dev/build/installer:sje-kots-install-cancel.13
+        name: installer
+        volumeMounts:
+        - mountPath: /config-patch
+          name: config-patch
+          readOnly: true
+        - mountPath: /mnt/node0
+          name: node-fs0
+          readOnly: true
+      imagePullSecrets:
+      - name: gitpod-registry
+      restartPolicy: OnFailure
+      serviceAccountName: installer
+      volumes:
+      - configMap:
+          name: gitpod-config-patch
+        name: config-patch
+      - hostPath:
+          path: /
+          type: Directory
+        name: node-fs0
+  ttlSecondsAfterFinished: 0
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  annotations:
+    kots.io/app-slug: gitpod
+    kots.io/when: "true"
+  labels:
+    app: gitpod
+    component: gitpod-installer
+    kots.io/app-slug: gitpod
+    kots.io/backup: velero
+  name: https-certificates
+spec:
+  dnsNames:
+  - gitpod-azure.simonemms.com
+  - '*.gitpod-azure.simonemms.com'
+  - '*.ws.gitpod-azure.simonemms.com'
+  issuerRef:
+    kind: ClusterIssuer
+    name: gitpod-issuer
+  secretName: https-certificates
