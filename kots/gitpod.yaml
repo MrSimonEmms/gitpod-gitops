@@ -50,7 +50,7 @@ data:
   cursor: "72"
   isAirgap: "false"
   releaseNotes: ""
-  sequence: "1"
+  sequence: "2"
   version: "1650726206"
 kind: ConfigMap
 metadata:
@@ -95,6 +95,20 @@ metadata:
     kots.io/backup: velero
   name: kotsadm-replicated-registry
   namespace: gitpod
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: v1
+data:
+  .dockerconfigjson: eyJhdXRocyI6IHsiZ2l0cG9kODM1NTYuYXp1cmVjci5pbyI6IHsidXNlcm5hbWUiOiAiZ2l0cG9kODM1NTYiLCAicGFzc3dvcmQiOiAiS3lhSTlOaFdEL1pXZnlRRHVuU1FFUEp2OUFkWjI1TGYiLCAiYXV0aCI6ICJaMmwwY0c5a09ETTFOVFk2UzNsaFNUbE9hRmRFTDFwWFpubFJSSFZ1VTFGRlVFcDJPVUZrV2pJMVRHWT0ifX19
+kind: Secret
+metadata:
+  annotations:
+    kots.io/app-slug: gitpod
+    kots.io/when: "true"
+  labels:
+    kots.io/app-slug: gitpod
+    kots.io/backup: velero
+  name: container-registry
 type: kubernetes.io/dockerconfigjson
 ---
 apiVersion: v1
@@ -277,7 +291,7 @@ spec:
             yq e -i ".imagePullSecrets[0].kind = \"secret\"" "${CONFIG_FILE}"
             yq e -i ".imagePullSecrets[0].name = \"gitpod-registry\"" "${CONFIG_FILE}"
             yq e -i '.dropImageRepo = true' "${CONFIG_FILE}"
-          elif [ 'false' = "true" ];
+          elif [ 'true' = "true" ];
           then
             echo "Gitpod: configuring external container registry"
 
